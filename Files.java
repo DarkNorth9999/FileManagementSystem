@@ -9,9 +9,9 @@ public class Files implements FileSystem {
     File f;
     FileOps fops;
 
-    Files(String name, String path){
+    public Files(String name, Directory d){ //bina directory ke files mat banao
         fileName = name;
-        this.path = path+"/" +name;
+        this.path = d.path+"/" +name;
         fops = new FileOps();
     }
 
@@ -26,6 +26,10 @@ public class Files implements FileSystem {
         }
     }
 
+    public boolean isDirectory(){
+        return false;
+    }
+
     public void ls(){
         System.out.println("File: "+fileName);
     }
@@ -36,22 +40,27 @@ public class Files implements FileSystem {
         if(ans) System.out.println("File got deleted");
     }
 
-    public void FileOperations(String operation, String content){
+    public void FileOperations(FileOperations operation, String content){
         switch(operation){
-            case "read":
+            case READ:
                 fops.read(path);
                 break;
-            case "write":
+            case WRITE:
                 fops.write(path,content);
                 break;
         }
+    }
+
+    public File getFile(){
+        return f;
     }
 }
 
 class FileOps{
     public void read(String path){
+        FileInputStream fin=null;
         try{
-            FileInputStream fin = new FileInputStream(path);
+            fin = new FileInputStream(path);
             int i = 0;
             while((i=fin.read())!=-1){
                 System.out.print((char)i);
@@ -61,7 +70,9 @@ class FileOps{
         catch(Exception e){
             e.printStackTrace();
         }
-
+//      finally {
+//            fin.close();
+//      }
     }
 
     public void write(String path, String content){
